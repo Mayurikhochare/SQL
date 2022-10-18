@@ -1,0 +1,9 @@
+a)select * from orders where salesman_id=(select salesman_id from salesman where name="David")
+b)select * from orders where salesman_id=(select salesman_id from salesman where city="London")
+c)select * from orders where salesman_id in(select salesman_id from salesman where customer_id=3004)
+d)select * from orders where order_date='2012-10-10' having purchase_amount>avg(purchase_amount)
+e)select * from orders inner join salesman where orders.salesman_id=salesman.salesman_id and city="paris"
+f)select commission from salesman where city="New York"
+g)select * from orders where order_date='2012-09-10' having purchase_amount<avg(purchase_amount)
+h)select all(name) from salesman
+

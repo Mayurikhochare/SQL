@@ -1,0 +1,11 @@
+i)select book_name,author_name,price,quantity_issued from books inner join issued where books.book_id=issued.book_id and publishers="first pubi"
+ii)select book_name from books inner join issued where books.book_id=issued.book_id and type="text"
+iii)select book_name,price from books order by price
+iv)update books set price=price+50 where publishers="EPB"
+v)select count(*) from books ---> 5
+vi)select max(price) from books where qty>=15
+--->750
+vii)select book_name,author_name from books where publishers="EPB"
+-->
+Fast Cook	Lata Kapoor
+My First C++	Brain and Brook

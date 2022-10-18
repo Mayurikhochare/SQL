@@ -1,0 +1,26 @@
+create table teacher(No int primary key,Name varchar(20),Age int,Department varchar(10),DOJ date,Salary int,Sex char)
+
+a)desc teacher
+b)select * from teacher
+c)select * from teacher where Department="History"
+d)select Name from teacher where Department="Maths" and Sex='F'
+e)select Name,DOJ from teacher order by DOJ
+f)select Name,Salary,Age from teacher where Sex='M'
+g)select Name,Salary,Age ,(Salary*0.15) as "Bonus" from teacher 
+h)select Name,DOJ from teacher where DOJ like '1997%'
+i)select * from teacher where No<=3 order by No 
+j)select * from teacher where No>3 order by No 
+k)insert into teacher values(9,"Raja",26,"Computer",'1995-05-13',2300,'M')
+
+
+i)select count(distinct Department) from teacher
+---> 3
+
+ii)select max(age) from teacher where sex='F'
+---> 35
+
+iii)select AVG(Salary) from teacher where sex='M'
+--->20050.0000
+
+iv)select SUM(Salary) from teacher where DOJ<'1997-01-01'
+--->32300
