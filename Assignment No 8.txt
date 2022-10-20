@@ -1,0 +1,15 @@
+
+create table garment(Gcode int,Description varchar(20),price int,Fcode varchar(10),ReadyDate date)
+insert into garment values(10089,"Slacks",750,"F03",'10-09-09')
+select * from garment
+CREATE TABLE FABRIC(FCODE VARCHAR(10),TYPE VARCHAR(20))
+INSERT INTO FABRIC VALUES("F01","TERELENE")
+select * from FABRIC
+ALTER TABLE FABRIC ADD CONSTRAINT PK PRIMARY KEY (FCODE)
+ALTER TABLE GARMENT ADD CONSTRAINT FO FOREIGN KEY(FCODE) REFERENCES FABRIC(FCODE)
+
+
+1.SELECT * FROM GARMENT WHERE Readydate between '08-10-09' and '16-06-10'
+2.select fcode ,max(price),min(price) from garment group by fcode;
+3.select gcode,description,type,g.fcode from garment g join fabric f where g.fcode=f.fcode
+

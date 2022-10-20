@@ -1,0 +1,64 @@
+create table hospital (pno int primary key,name varchar(10),age int,department varchar(10),dateofadm date,charges numeric(7,2),sex char(1));
+insert into hospital values(10,"shilpa",23,"nuclear medicine",'1998-01-13',800,'M');
+alter table hospital modify department varchar(20);
+
+#1
+start transaction;
+desc hospital;
+commit;
+
+#2
+ALTER TABLE hospital modify gotadmitted varchar(20)
+select * from hospital;
+update hospital set gotadmitted="got admitted on";
+
+
+start transaction;
+ALTER TABLE hospital add column nameof varchar(20) after `name`;
+ALTER TABLE hospital add column gotadmitted varchar(20) after `department`;
+savepoint s1;
+update hospital set nameof="of Age";
+update hospital set gotadmitted="got admitted on";
+select name,nameof,age,gotadmitted,dateofadm from hospital;
+rollback to s1;
+commit;
+
+#3 to 9
+alter table hospital add column Address char(20);
+alter table hospital modify Address char(25);
+alter table hospital modify Address varchar(25);
+alter table hospital rename column Address to Home_Address;
+alter table hospital drop column Home_Address;
+rename table hospital to hospital_data;
+
+#10
+create table temp_data(beforeAge int,updatedAge int)
+Delimiter $
+create trigger ageTrigger
+after update on hospital for each row
+begin
+if old.age != new.age then
+	insert into temp_data(beforeAge,updatedAge) values(old.age,new.age);
+   
+end if;
+end$
+Delimiter ;
+update hospital set age=30 where pno=7;
+select * from temp_data;
+select * from hospital;
+
+#11
+Delimiter $
+create trigger deleteTrigger
+after delete on hospital for each row
+begin
+ insert into temp_data values(0,0);
+end$
+Delimiter ;
+delete from hospital;
+select * from temp_data;
+select * from hospital;
+
+
+#12
+drop table hospital;
