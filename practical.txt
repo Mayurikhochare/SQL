@@ -1,0 +1,444 @@
+create database mayuridbb;
+create table Student(id bigint(10),name varchar(20));
+use mayuridb
+create table student(id int ,name varchar(20))
+show student
+select * from student
+use mayuridb
+create table stud(id int not null unique,name varchar(20)not null,mobile int(10) unique,city varchar(20)default ('Mumbai'),marks int check(marks>35))
+select * from stud
+insert into stud(id,name,mobile,marks) values(1,"mayuri",9,67)
+select * from stud
+insert into stud values(2,"mayuri",6,"Pune",77)
+desc student
+desc stud
+create table student1(stud_id int references stud(id),name varchar(20))
+select * from student1
+insert into student1 values(2,"ma")
+
+create table emp(empid int primary key,empname varchar(20))
+create table emp1(empid1 int references emp(empid),empname varchar(20))
+insert into emp values(2,"ma")
+insert into emp1 values(1,"ma")
+update student1 set name="mayuri" where stud_id=6
+delete from student1 where stud_id=6
+create table Employee(ENO INT(5)PRIMARY KEY,ENAME VARCHAR(20),JOB VARCHAR(20),MGR INT(5),HIREDATE DATE,SAL INT(10),COMM INT(10),DEPT INT(5))
+select * from employee
+alter table employee add constraint fk foreign key(mgr)references employee(eno)
+insert into employee values(7369,"Sunita Sharma","clerk",null,'1980-12-17',2800,null,20)
+insert into employee values(7499,"Ashok Singhal","Ssalesman",null,'1981-02-20',3600,300,30)
+insert into employee values(7521,"Rohit Rana","salesman",null,'1981-02-22',5250,500,30)
+insert into employee values(7934,"Manoj Kaushik","clerk",7782,'1982-01-23',5300,null,10)
+update employee set dept=30 where eno=7900
+update employee set eno=7566 where ename="Jyoti Lamba"
+select ename,job from employee where dept=20 and mgr=7788
+create table department(dept int primary key,dname varchar(20))
+insert into department values(40,"Account")
+alter table employee add constraint fk1 foreign key(dept) references department(dept)
+select * from employee inner join department on employee.dept=department.dept
+select * from employee right join department on employee.dept=department.dept
+select * from employee left join department on employee.dept=department.dept
+select * from employee cross join department 
+select * from emp1
+insert into emp1 values(4,"abc")
+rollback
+insert into emp values(1,"xyz")
+alter table emp add column city varchar(10)
+update emp set city="Mumbai"
+rollback
+commit
+#GroupBy
+select * from employee group by dept
+select dept from employee group by dept having count(*)>3
+select dept,avg(sal) from employee where sal between 2000 and 3000  group by dept
+
+#having
+select dept,sum(sal) from employee group by dept having count(*)>2 and sum(sal)>9000
+
+#SubQueries
+select * from employee where dept in(select dept from department where dname like 'I%')
+select * from department where dept in(select dept from employee where comm =(select max(comm) from employee))
+select * from department
+select * from employee
+
+
+#string functions
+select upper('mayuri')from dual
+select lower(ename)from employee
+select Initcap(ename)from employee
+select concat(ename,mgr) from employee
+select replace(ename,'a','@') from employee
+select length(ename) from employee
+select reverse(ename) from employee
+select ename from employee where instr(ename,'a')
+create table teacher(No int primary key,Name varchar(20),Age int,Department varchar(10),DOJ date,Salary int,Sex char)
+insert into teacher values(9,"Raja",26,"Computer",'1995-05-13',2300,'M')
+select * from teacher
+select * from teacher where No>3 order by No 
+desc teacher
+
+select SUM(Salary) from teacher where DOJ<'1997-01-01'
+
+create table salesman(salesman_id int,name varchar(20),city varchar(20),commission int)
+insert into salesman values(5007,"Rakesh","Rome",0.13)
+select * from salesman
+alter table salesman modify commission float
+update salesman set commission=0.15 where salesman_id=5001
+alter table salesman add constraint pk primary key(salesman_id)
+create table orders(order_no int,purchase_amount float,order_date date,customer_id int,salesman_id int references salesman(salesman_id))
+insert into orders values(70013,3045.6,'2012-04-25',3002,5001)
+select * from orders
+select * from orders where salesman_id=(select salesman_id from salesman where name="David")
+select * from orders where salesman_id=(select salesman_id from salesman where city="London")
+select * from orders where salesman_id not in(select salesman_id from salesman where customer_id=3004)
+select * from orders where order_date='2012-10-10' having purchase_amount>avg(purchase_amount)
+select * from orders inner join salesman where orders.salesman_id=salesman.salesman_id and city="paris"
+select commission from salesman where city="New York"
+select * from orders where order_date='2012-09-10' having purchase_amount<avg(purchase_amount)
+select all(name) from salesman
+
+create table books(book_id varchar(10),Book_name varchar(20),author_name varchar(20),publishers varchar(10),price int,type varchar(10),qty int)
+insert into books values("F0002","Thunderbolts","Anna Roberts","first pubi",750,"fiction",50)
+select * from Books
+update books set qty=10 where book_id="T0001"
+alter table books add constraint pk primary key (book_id)
+create table issued(book_id varchar(5) references books(book_id),quantity_issued int)
+insert into issued values("F0001",2)
+select book_name,author_name,price,quantity_issued from books inner join issued where books.book_id=issued.book_id and publishers="first pubi"
+select book_name from books inner join issued where books.book_id=issued.book_id and type="text"
+select book_name,price from books order by price
+update books set price=price+50 where publishers="EPB"
+select book_name,author_name from books where publishers="EPB"
+
+
+#non parameterized function
+Delimiter $
+create function helloworld()
+returns varchar(50)
+deterministic
+begin
+return "Hello world";
+end$
+Delimiter ;
+
+select helloworld();
+
+#parameterized function
+Delimiter $
+create function nameOfPerson(first varchar(50),last varchar(50))
+returns varchar(100)
+deterministic
+begin
+return concat(first,last);
+end$
+Delimiter ;
+
+select nameOfPerson("Mayuri"," khochare") as "Name"
+
+Delimiter $
+create function multiplication(num1 int,num2 int)
+returns int
+deterministic
+begin
+return num1*num2;
+end $
+Delimiter ;
+
+select multiplication(10,2)
+
+
+Delimiter $
+create function calculateAge(dob date)
+returns int
+deterministic
+begin
+declare todaydate date;
+select current_date() into todaydate;
+Return year(todaydate)-year(dob) ;
+end $
+Delimiter ;
+
+select calculateAge('1999-05-23')
+
+
+
+#stored Procedures
+#non parameterized
+Delimiter $
+create procedure getEmployeeAndDepartment()
+begin
+select * from employee;
+select * from department;
+end $
+Delimiter ;
+call getEmployeeAndDepartment()
+
+#parameterized store procedure with in
+Delimiter $
+create procedure getEmployeename(in id int)
+begin
+select ename from employee where eno=id;
+end $
+Delimiter ;
+call getEmployeename(7499)
+
+#parameterized store procedure with out
+
+Delimiter $
+create procedure getName(out name varchar(10))
+begin
+select ename into name from employee where eno=7698;
+end $
+Delimiter ;
+call getName(@name);
+select @name;
+
+#with both in and out
+
+select * from employee;
+#view
+create view empView as select eno,ename from employee;
+select * from empview;
+insert into empview values(1,"jhdjdh");
+update empview set eno=7777 where ename="Sunita Sharma";
+
+create table employee1 (empno int,ename varchar(10),job varchar(10),manager int,hiredate date,salary float,commission float,deptno int)
+insert into employee1 values(8902,"fakir","analyst",8566,'1991-12-03',3500,null,20)
+select * from employee1
+#1
+Delimiter $
+create procedure getAllDetails()
+begin
+select * from employee1;
+end $
+Delimiter ;
+call getAllDetails()
+ #2
+ Delimiter $
+create procedure insertDetails()
+begin
+insert into employee1 values(8088,"ramesh","clerk",8789,'2022-08-09',4500,null,10);
+end $
+Delimiter ;
+call insertDetails()
+
+#3
+Delimiter $
+create procedure getCountOfRecords(out count int)
+begin
+select count(*) into count from employee1; 
+end $
+Delimiter ;
+call getCountOfRecords(@count);
+select @count;
+
+
+#4
+Delimiter $
+create procedure getRecord()
+begin
+select * from employee1 where deptno=30; 
+end $
+Delimiter ;
+call getRecord();
+
+#5
+Delimiter $
+create procedure getSortedData()
+begin
+select * from employee1 order by ename;
+end $
+Delimiter ;
+call getSortedData();
+
+#6
+Delimiter $
+create procedure getUpdatedData()
+begin
+update employee1 set salary=500 where empno=(SELECT LAST_INSERT_ID());
+end $
+Delimiter ;
+call getUpdatedData();
+#3
+Delimiter $
+create function counts()
+returns int
+deterministic
+begin
+return (select count(*) from employee);
+end $
+delimiter ;
+drop function if exists counts;
+select counts();
+
+#6
+Delimiter $
+create function updateSal()
+returns int
+deterministic
+begin
+return (SELECT LAST_INSERT_ID() from employee);
+end $
+delimiter ;
+drop function if exists updateSal;
+select updateSal();
+
+
+
+insert into employee1 values(8089,"varun","clerk",8789,'2022-08-09',4500,null,10)
+;
+
+select rownum from employee1
+
+
+Delimiter $
+create function showDetails()
+returns varchar(10)
+deterministic
+begin
+return "employee1";
+end $
+delimiter ;
+drop function if exists showDetails;
+
+select * from (select * from showDetails());
+
+#triggers
+select * from employee
+create table newSalary(oldSalary int,updatedSalary int)
+Delimiter $
+create trigger updateTrigger
+after update on employee for each row
+begin
+if old.sal != new.sal then
+	insert into newSalary(oldSalary,updatedSalary) values(old.sal,new.sal);
+   
+end if;
+end$
+Delimiter ;
+update employee set sal=3600 where eno=7521;
+select * from newSalary;
+drop trigger if exists updateTrigger;
+
+#transactions
+select * from emp1;
+delete from emp1;
+alter table emp1 drop column address;
+insert into emp1 values(1,"mayuri");
+start transaction;
+delete from emp1 where empid1=1;
+alter table emp1 add column address varchar(10);
+savepoint s1;
+insert into emp1 values(4,"xyz","pune","djhd");
+rollback to s1;
+commit;
+
+create table bank(accountNo int ,accountBalance int);
+start transaction;
+insert into bank values(12334322,50000);
+update bank set accountBalance=accountBalance-5000;
+savepoint s1;
+update bank set accountBalance=accountBalance-2000;
+rollback to s1;
+commit;
+
+select * from bank;
+
+#-------------------------------------------
+create table hospital (pno int primary key,name varchar(10),age int,department varchar(10),dateofadm date,charges numeric(7,2),sex char(1));
+insert into hospital values(10,"shilpa",23,"nuclear medicine",'1998-01-13',800,'M');
+alter table hospital modify department varchar(20);
+
+#1
+start transaction;
+desc hospital;
+commit;
+
+#2
+ALTER TABLE hospital modify gotadmitted varchar(20)
+select * from hospital;
+update hospital set gotadmitted="got admitted on";
+
+
+start transaction;
+ALTER TABLE hospital add column nameof varchar(20) after `name`;
+ALTER TABLE hospital add column gotadmitted varchar(20) after `department`;
+savepoint s1;
+update hospital set nameof="of Age";
+update hospital set gotadmitted="got admitted on";
+select name,nameof,age,gotadmitted,dateofadm from hospital;
+rollback to s1;
+commit;
+
+#3 to 9
+alter table hospital add column Address char(20);
+alter table hospital modify Address char(25);
+alter table hospital modify Address varchar(25);
+alter table hospital rename column Address to Home_Address;
+alter table hospital drop column Home_Address;
+rename table hospital to hospital_data;
+
+#10
+create table temp_data(beforeAge int,updatedAge int)
+Delimiter $
+create trigger ageTrigger
+after update on hospital for each row
+begin
+if old.age != new.age then
+	insert into temp_data(beforeAge,updatedAge) values(old.age,new.age);
+   
+end if;
+end$
+Delimiter ;
+update hospital set age=30 where pno=7;
+select * from temp_data;
+select * from hospital;
+
+#11
+Delimiter $
+create trigger deleteTrigger
+after delete on hospital for each row
+begin
+ insert into temp_data values(0,0);
+end$
+Delimiter ;
+delete from hospital;
+select * from temp_data;
+select * from hospital;
+
+
+#12
+drop table hospital;
+#-----------------------------------------------------------------------------------------------------
+
+create table garment(Gcode int,Description varchar(20),price int,Fcode varchar(10),ReadyDate date)
+insert into garment values(10089,"Slacks",750,"F03",'10-09-09')
+select * from garment
+CREATE TABLE FABRIC(FCODE VARCHAR(10),TYPE VARCHAR(20))
+INSERT INTO FABRIC VALUES("F01","TERELENE")
+select * from FABRIC
+ALTER TABLE FABRIC ADD CONSTRAINT PK PRIMARY KEY (FCODE)
+ALTER TABLE GARMENT ADD CONSTRAINT FO FOREIGN KEY(FCODE) REFERENCES FABRIC(FCODE)
+SELECT * FROM GARMENT WHERE Readydate between '08-10-09' and '16-06-10'
+
+select fcode ,max(price),min(price) from garment group by fcode;
+
+select gcode,description,type,g.fcode from garment g join fabric f where g.fcode=f.fcode
+#_____________________________________________________________________________________________________
+
+
+create database LMS_DB;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
